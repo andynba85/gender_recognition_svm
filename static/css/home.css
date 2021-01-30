@@ -1,0 +1,27 @@
+body{
+  
+}
+
+body div{
+  text-align:center;
+  padding:10px 0 ;
+}
+
+.circle{
+  margin:0 auto;
+  color:gray;
+  border:2px solid black;
+  border-radius:50%;
+  width:100px;
+  height:100px;
+}
+
+i{
+  font-size:25px;
+  position:relative;
+  top:30%;
+}
+
+.fa-female,.fa-male{
+  font-size:45px;
+}
