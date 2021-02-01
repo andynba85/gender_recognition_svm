@@ -16,6 +16,7 @@ import wave
 import os
 import platform
 from IPython.display import Audio
+import pickle
 
 def import_and_clean():
     df = pd.read_csv('training_data.csv', header=0)
@@ -85,6 +86,8 @@ def parameter_tuning_svm(input_df):
 
     svc = SVC(kernel='linear', C=optimal_cval, gamma=optimal_gamma)
     svc.fit(x,y)
+    with open('model/svm_model.pickle', 'wb') as f:
+        pickle.dump(svc, f)
     return svc
 
 def record_audio():
@@ -111,7 +114,8 @@ def record_audio():
     for i in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
         data = stream.read(CHUNK)
         frames.append(data)
-
+        #print(data)
+    
     print("* done recording")
     
     stream.stop_stream()
@@ -124,6 +128,7 @@ def record_audio():
     wf.setframerate(RATE)
     wf.writeframes(b''.join(frames))
     wf.close()
+    print(frames)
 
 if __name__ == '__main__':
 
@@ -143,11 +148,14 @@ if __name__ == '__main__':
         values[x] = float(values[x])/1000
 
     print("training and tuning svm")
-    df =import_and_clean()
-    tuned_svm = parameter_tuning_svm(df)
-    predictions = tuned_svm.predict([values])
-    print(predictions)
-    if predictions == 0:
-        print("you are a female")
-    else:
-        print("you are a male")
+    #df =import_and_clean()
+    #tuned_svm = parameter_tuning_svm(df)
+    #tuned_svm = load_model('svm_model.h5')
+    with open('model/svm_model.pickle', 'rb') as f:
+        tuned_svm = pickle.load(f)
+        predictions = tuned_svm.predict([values])
+        print(predictions)
+        if predictions == 0:
+            print("you are a female")
+        else:
+            print("you are a male")
